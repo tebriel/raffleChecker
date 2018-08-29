@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>Raffle Checker!</title>
+  </head>
+  <body>
+    <h1>Raffle Checker</h1>
+    <form action="submit">
+      <input type="number" id="raffleNum" oninput="checkNumber()" />
+    </form>
+    <h2>Matching Tickets</h2>
+    <ul id="matches">
+      <li>None</li>
+    </ul>
+  <script type="application/javascript">
+    function checkNumber() {
+      var matches = document.getElementById('matches');
+      matches.innerHTML = "";
+      var prefix = document.getElementById('raffleNum').value;
+      var r = new XMLHttpRequest();
+      r.open("POST", "https://5uoqzwdofe.execute-api.us-west-1.amazonaws.com/Prod", true);
+      r.onreadystatechange = function () {
+        if (r.readyState != 4 || r.status != 200) return;
+        var resp = JSON.parse(r.responseText);
+        resp.ticket_numbers.forEach(function(currentValue, currentIndex, listObj) {
+          var li = document.createElement("LI")
+          var text = document.createTextNode(currentValue);
+          li.appendChild(text);
+          matches.appendChild(li);
+        });
+      };
+      r.send(JSON.stringify({"ticket_num": prefix}));
+    }
+    checkNumber();
+  </script>
+  </body>
+</html>
