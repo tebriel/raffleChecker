@@ -1,32 +1,26 @@
-package main
+package storage
 
 import (
-	"context"
 	"testing"
 )
 
 func TestHandleRequest(t *testing.T) {
-	ctx := context.Background()
 	scenarios := []struct {
-		Event RaffleEvent
+		Prefix        string
 		ExpectedCount int
 	}{{
-		RaffleEvent{TicketNum: "013"},
+		"013",
 		1,
-	},{
-		Event: RaffleEvent{TicketNum: "999"},
+	}, {
+		Prefix:        "999",
 		ExpectedCount: 0,
 	},
 	}
 
 	for _, scenario := range scenarios {
-		resp, err := HandleRequest(ctx, scenario.Event)
-		if err != nil {
-			t.Errorf("Error #%v", err)
-		}
+		resp := findLocalMatches(scenario.Prefix)
 
-
-		numMatches := len(resp.TicketNumbers)
+		numMatches := len(resp)
 		if numMatches != scenario.ExpectedCount {
 			t.Errorf("Expected %d match but got %d", scenario.ExpectedCount, numMatches)
 		}

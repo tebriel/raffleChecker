@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/tebriel/raffleChecker/pkg/storage"
 )
 
 // RaffleEvent contains a ticket number for matching
@@ -17,7 +18,7 @@ type RaffleResponse struct {
 
 // HandleRequest is called by the aws lambda
 func HandleRequest(ctx context.Context, event RaffleEvent) (RaffleResponse, error) {
-	response := RaffleResponse{TicketNumbers: findMatches(event.TicketNum)}
+	response := RaffleResponse{TicketNumbers: storage.FindMatches(event.TicketNum)}
 
 	return response, nil
 }

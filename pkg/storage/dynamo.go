@@ -1,4 +1,4 @@
-package main
+package storage
 
 import (
 	"fmt"
@@ -7,67 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"os"
-	"strings"
 )
-
-type RaffleTicket struct {
-	TicketNumber string
-}
-
-var (
-	Tickets = []string{
-		"0136297",
-		"0965302",
-		"0223289",
-		"0107291",
-		"0911453",
-		"0911452",
-		"0911451",
-		"0925406",
-		"0222383",
-		"0027490",
-		"0224464",
-		"0035561",
-		"0924543",
-		"0020730",
-		"0119485",
-		"0225621",
-		"0032567",
-		"0107296",
-		"119436"}
-	StorageType = USE_LOCAL
-)
-
-const (
-	USE_DYNAMO = iota
-	USE_LOCAL
-)
-
-func init() {
-	if os.Getenv("STORAGE_TYPE") == "DYNAMO" {
-		StorageType = USE_DYNAMO
-	}
-}
-
-func findMatches(prefix string) []string {
-	switch StorageType {
-	case USE_DYNAMO:
-		return findDynamoMatches(prefix)
-	default:
-		return findLocalMatches(prefix)
-	}
-}
-
-func findLocalMatches(prefix string) []string {
-	var matches []string
-	for _, ticket := range Tickets {
-		if strings.HasPrefix(ticket, prefix) {
-			matches = append(matches, ticket)
-		}
-	}
-	return matches
-}
 
 func findDynamoMatches(prefix string) []string {
 	svc := dynamodb.New(session.New())
